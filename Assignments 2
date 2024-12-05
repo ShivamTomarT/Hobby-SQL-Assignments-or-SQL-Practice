@@ -1,0 +1,71 @@
+
+/********************************************************************************************************************
+
+                                                  Assignment- 2
+
+*********************************************************************************************************************/
+--1- write a update statement to update city as null for order ids :  CA-2020-161389 , US-2021-156909
+
+update Orders
+set city =' '
+where order_id in ('CA-2020-161389' , 'US-2021-156909')
+
+--2- write a query to find orders where city is null (2 rows)
+
+select * from Orders
+where city =' '
+
+
+--3- write a query to get total profit, first order date and latest order date for each category.
+
+select category,max (order_date) as first_order_date ,min(order_date) as lated_order_date,sum(profit) as total_profit from Orders
+group by category
+
+
+--4- write a query to find sub-categories where average profit is more than the half of the max profit in that sub-category.
+select sub_category
+from orders
+group by sub_category
+having avg(profit) > max(profit)/2
+
+
+
+--5-write a query to find students who have got same marks in Physics and Chemistry.
+--Solution 1:-
+select STUDENT_ID,MARKS,count(1) as total from EXAMS_TABLE_DAY_4
+where SUBJECT in ('Physics','Chemistry')
+group by STUDENT_ID,MARKS
+having count(1) =2
+
+--Solution 2:-
+with cte as (
+select STUDENT_ID,MARKS from EXAMS_TABLE_DAY_4
+where SUBJECT in ('physics','chemistry')
+group by STUDENT_ID,MARKS
+having count(MARKS)=2
+)
+select mt.* from cte as st inner join EXAMS_TABLE_DAY_4 as mt
+on st.STUDENT_ID=mt.STUDENT_ID and st.MARKS =mt.MARKS
+
+
+--6- write a query to find total number of products in each category.
+
+select category,count(distinct product_id) as no_of_product from Orders
+group by category
+
+
+--7- write a query to find top 5 sub categories in west region by total quantity sold.
+select top 5 sub_category,sum(quantity) as total_qty_sold from Orders
+where region='west'
+group by sub_category
+order by total_qty_sold desc
+
+
+---8- write a query to find total sales for each region and ship mode combination for orders in year 2020.
+
+select region,ship_mode ,sum(sales) as total_sales from Orders
+where datepart(YYYY,order_date)=2020 
+group by region ,ship_mode
+
+
+
